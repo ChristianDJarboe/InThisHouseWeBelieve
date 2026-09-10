@@ -1,11 +1,11 @@
 /**
  * Product sizes for Plastic Yard Sign.
- * Shop sells one size only: 24" x 18" horizontal.
  * Price is all-in for US (print + typical shipping baked in).
  */
 
 const DEFAULT_SIZES = [
-  { variantId: '92132', label: '24" x 18" Horizontal', priceCents: 4000, orientation: 'horizontal' },
+  { variantId: '92132', label: '24" x 18" Horizontal', priceCents: 5000, orientation: 'horizontal' },
+  { variantId: '92131', label: '18" x 12" Horizontal', priceCents: 4000, orientation: 'horizontal' },
 ];
 
 export function getProductSizes() {

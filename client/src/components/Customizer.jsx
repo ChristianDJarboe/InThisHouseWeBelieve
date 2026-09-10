@@ -286,11 +286,25 @@ export default function Customizer() {
           onChangeLine={updateLine}
         />
         <p className="price-tag">{formatPrice(priceCents)}</p>
-        <p className="hint" style={{ textAlign: 'center' }}>
-          {'24" x 18" · shipping included'}
-          <br />
-          One-of-one custom print
-        </p>
+        <div className="field" style={{ marginTop: '0.75rem' }}>
+          <label>Size</label>
+          <div className="row" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
+            {(config.sizes || []).map((s) => (
+              <button
+                key={s.variantId}
+                type="button"
+                className={`btn ${variantId === s.variantId ? 'btn-primary' : 'btn-ghost'}`}
+                onClick={() => setVariantId(s.variantId)}
+                style={{ flex: '1 1 auto' }}
+              >
+                {s.label.replace(' Horizontal', '')} · {formatPrice(s.priceCents)}
+              </button>
+            ))}
+          </div>
+          <p className="hint" style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+            Shipping included · one-of-one custom print
+          </p>
+        </div>
       </section>
 
       <section className="panel controls-panel">
@@ -514,7 +528,7 @@ export default function Customizer() {
             onClick={checkout}
             disabled={busy || shareBusy || !selectedSize}
           >
-            {busy ? 'Redirecting to checkout...' : `Buy 24" x 18" — ${formatPrice(priceCents)}`}
+            {busy ? 'Redirecting to checkout...' : `Buy ${selectedSize?.label?.replace(' Horizontal', '') || 'sign'} — ${formatPrice(priceCents)}`}
           </button>
           <button
             type="button"
