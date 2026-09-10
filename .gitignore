@@ -39,3 +39,6 @@ Thumbs.db
 *.tgz
 .cache/
 coverage/
+
+data/*.db
+data/orders.json
