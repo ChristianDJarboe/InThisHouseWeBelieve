@@ -268,6 +268,9 @@ export default function SignPreview({
   const b = { ...DEFAULT_BORDER, ...(border || {}) };
   const faceHeight = orientation === 'vertical' ? 320 : 210;
   const heightBudget = faceHeight / count;
+  const allStriped =
+    list.length > 0 &&
+    list.every((l) => l?.backgroundColor && l.backgroundColor !== 'transparent');
 
   const faceStyle = {
     backgroundColor: backgroundColor || '#000000',
@@ -297,7 +300,7 @@ export default function SignPreview({
   return (
     <div className="mockup-stage">
       <div className={`yard-sign ${orientation}`} aria-label="Plastic yard sign preview">
-        <div className={`sign-face plastic poster ${orientation}`} style={faceStyle}>
+        <div className={`sign-face plastic poster ${orientation}${allStriped ? ' striped' : ''}`} style={faceStyle}>
           <div className="plastic-flute" aria-hidden="true" />
           {list.map((line, i) => {
             const isTitle = i === 0;

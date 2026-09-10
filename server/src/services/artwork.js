@@ -97,18 +97,34 @@ export async function generateArtwork(customization, orderId) {
     ? Math.max(8, Math.round((Number(border.width) || 3) * (WIDTH / 400)))
     : 0;
 
+  const lineCount = Math.max(lines.length, 1);
+  const allStriped = lines.length > 0 && lines.every(
+    (l) => l?.backgroundColor && l.backgroundColor !== 'transparent'
+  );
+
+  // Text box sits just inside the border (stripes can full-bleed behind it)
+  const padX = inset + bw + Math.round(WIDTH * 0.035);
+  const padY = allStriped
+    ? inset + bw
+    : inset + bw + Math.round(HEIGHT * 0.028);
+  const usableW = WIDTH - padX * 2;
+  const usableH = HEIGHT - padY * 2;
+
+  // Full-bleed color bands first so no face background shows between lines
+  if (allStriped) {
+    lines.forEach((line, i) => {
+      const y0 = Math.round((HEIGHT * i) / lineCount);
+      const y1 = Math.round((HEIGHT * (i + 1)) / lineCount);
+      ctx.fillStyle = line.backgroundColor;
+      ctx.fillRect(0, y0, WIDTH, Math.max(1, y1 - y0));
+    });
+  }
+
   if (border?.enabled) {
     ctx.strokeStyle = border.color || '#ffffff';
     ctx.lineWidth = bw;
     ctx.strokeRect(inset, inset, WIDTH - inset * 2, HEIGHT - inset * 2);
   }
-
-  // Text box sits just inside the border
-  const padX = inset + bw + Math.round(WIDTH * 0.035);
-  const padY = inset + bw + Math.round(HEIGHT * 0.028);
-  const usableW = WIDTH - padX * 2;
-  const usableH = HEIGHT - padY * 2;
-  const lineCount = Math.max(lines.length, 1);
 
   lines.forEach((line, i) => {
     const rawText = (line?.text || '').trim() || ' ';
@@ -121,12 +137,13 @@ export async function generateArtwork(customization, orderId) {
     const bandH = y1 - y0;
     const centerY = y0 + bandH / 2;
 
-    if (lineBg && lineBg !== 'transparent') {
+    if (!allStriped && lineBg && lineBg !== 'transparent') {
       ctx.fillStyle = lineBg;
       ctx.fillRect(0, y0, WIDTH, bandH);
     }
 
-    const family = canvasFontFamily(line?.font || 'sans');
+
+        const family = canvasFontFamily(line?.font || 'sans');
     const weight = canvasWeight(line?.weight);
     const tracking = Number.isFinite(Number(line?.letterSpacing))
       ? Number(line.letterSpacing)

@@ -5,7 +5,7 @@
  */
 
 const DEFAULT_SIZES = [
-  { variantId: '92132', label: '24" x 18" Horizontal', priceCents: 5999, orientation: 'horizontal' },
+  { variantId: '92132', label: '24" x 18" Horizontal', priceCents: 4000, orientation: 'horizontal' },
 ];
 
 export function getProductSizes() {

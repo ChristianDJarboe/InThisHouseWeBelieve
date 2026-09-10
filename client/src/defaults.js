@@ -38,7 +38,7 @@ export function getWeight(id) {
   return WEIGHT_OPTIONS.find((w) => w.id === id) || WEIGHT_OPTIONS[2];
 }
 
-export function stripeLine(text, index = 0, font = DEFAULT_FONT, palette = ROYGBIV) {
+export function stripeLine(text, index = 0, font = 'sans', palette = ROYGBIV) {
   const stripe = palette[index % palette.length];
   return {
     text,
@@ -48,7 +48,7 @@ export function stripeLine(text, index = 0, font = DEFAULT_FONT, palette = ROYGB
     weight: DEFAULT_WEIGHT,
     letterSpacing: DEFAULT_LETTER_SPACING,
     fontScale: DEFAULT_FONT_SCALE,
-    fitWidth: false,
+    fitWidth: true,
   };
 }
 
@@ -84,80 +84,8 @@ function withPalette(texts, palette, mode = 'stripes') {
   });
 }
 
-/** Soft sunset for family etc. */
-/** Soft warm golds & creams on black */
-const PALETTE_FAMILY = [
-  { hex: '#FFF8F0', weight: 'bold', fontScale: 0.98 },
-  { hex: '#F4A261', weight: 'light', fontScale: 1.05 },
-  { hex: '#E9C46A', weight: 'bold', fontScale: 0.9 },
-  { hex: '#E76F51', weight: 'light', fontScale: 1.0 },
-  { hex: '#2A9D8F', weight: 'light', fontScale: 0.85 },
-  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.82 },
-];
-
-/** Neon snack-aisle energy */
-const PALETTE_SNACKS = [
-  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
-  { hex: '#FF2E63', weight: 'light', fontScale: 1.05 },
-  { hex: '#08D9D6', weight: 'bold', fontScale: 0.95 },
-  { hex: '#FFE66D', weight: 'light', fontScale: 1.05 },
-  { hex: '#FF9FF3', weight: 'light', fontScale: 0.88 },
-  { hex: '#54A0FF', weight: 'bold', fontScale: 0.82 },
-];
-
-/** Newspaper / red-black editorial */
-const PALETTE_META = [
-  { hex: '#F5F5F5', weight: 'bold', fontScale: 0.98 },
-  { hex: '#C1121F', weight: 'light', fontScale: 1.05 },
-  { hex: '#DEE2E6', weight: 'bold', fontScale: 0.88 },
-  { hex: '#ADB5BD', weight: 'light', fontScale: 0.95 },
-  { hex: '#FF6B6B', weight: 'light', fontScale: 0.85 },
-  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.82 },
-];
-
-/** Matrix green / cyber pink */
-const PALETTE_FAKE = [
-  { hex: '#39FF14', weight: 'bold', fontScale: 0.98 },
-  { hex: '#00F5FF', weight: 'light', fontScale: 1.05 },
-  { hex: '#FF6EC7', weight: 'bold', fontScale: 0.9 },
-  { hex: '#FFE66D', weight: 'light', fontScale: 1.0 },
-  { hex: '#FF9F1C', weight: 'light', fontScale: 0.88 },
-  { hex: '#EAEAEA', weight: 'bold', fontScale: 0.82 },
-];
-
-/** Caution yellow / hazard orange */
-const PALETTE_UNHINGED = [
-  { hex: '#FFD600', weight: 'bold', fontScale: 0.98 },
-  { hex: '#FFFFFF', weight: 'light', fontScale: 1.15 },
-  { hex: '#FF6D00', weight: 'bold', fontScale: 0.88 },
-  { hex: '#FFD600', weight: 'light', fontScale: 0.95 },
-  { hex: '#FF5252', weight: 'light', fontScale: 0.82 },
-  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.78 },
-  { hex: '#FFD600', weight: 'bold', fontScale: 1.1 },
-];
-
-/** Cool steel / teal discourse */
-const PALETTE_PROBLEMATIC = [
-  { hex: '#E8F1F2', weight: 'bold', fontScale: 0.98 },
-  { hex: '#5BC0BE', weight: 'light', fontScale: 1.05 },
-  { hex: '#9DB4C0', weight: 'bold', fontScale: 0.88 },
-  { hex: '#FFFFFF', weight: 'light', fontScale: 0.95 },
-  { hex: '#5BC0BE', weight: 'light', fontScale: 0.85 },
-  { hex: '#A0AEC0', weight: 'bold', fontScale: 0.8 },
-  { hex: '#E8F1F2', weight: 'bold', fontScale: 1.05 },
-];
-
-/** Soft lilac / cream blank starter */
-const PALETTE_BLANK = [
-  { hex: '#FFFFFF', weight: 'bold', fontScale: 1 },
-  { hex: '#C4B5FD', weight: 'light', fontScale: 1.1 },
-  { hex: '#FDE68A', weight: 'bold', fontScale: 1 },
-  { hex: '#67E8F9', weight: 'regular', fontScale: 1 },
-];
-
 /**
- * Classic "poster" palette — text colors on black (matches reference sign).
- * Order matches the popular black yard-sign layout.
+ * Classic rainbow poster palette (original reference sign).
  */
 const CLASSIC_POSTER = [
   { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
@@ -169,11 +97,136 @@ const CLASSIC_POSTER = [
   { hex: '#FFFFFF', weight: 'bold', fontScale: 0.82 },
 ];
 
+/** Color-inverted Classic (for white field). */
+const CLASSIC_INVERT = [
+  { hex: '#000000', weight: 'bold', fontScale: 0.98 },
+  { hex: '#0073FF', weight: 'light', fontScale: 1.05 },
+  { hex: '#0012FF', weight: 'bold', fontScale: 0.9 },
+  { hex: '#FF2B00', weight: 'light', fontScale: 1.0 },
+  { hex: '#8300FF', weight: 'light', fontScale: 0.78 },
+  { hex: '#00D159', weight: 'light', fontScale: 1.28 },
+  { hex: '#000000', weight: 'bold', fontScale: 0.82 },
+];
+
+const PALETTE_FAMILY = [
+  { hex: '#FFF8F0', weight: 'bold', fontScale: 0.98 },
+  { hex: '#F4A261', weight: 'light', fontScale: 1.08 },
+  { hex: '#E9C46A', weight: 'bold', fontScale: 0.92 },
+  { hex: '#2A9D8F', weight: 'light', fontScale: 1.0 },
+  { hex: '#4CC9F0', weight: 'light', fontScale: 1.05 },
+  { hex: '#E76F51', weight: 'light', fontScale: 1.12 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.85 },
+];
+const PALETTE_NEIGHBOR = [
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
+  { hex: '#90BE6D', weight: 'light', fontScale: 1.1 },
+  { hex: '#F9C74F', weight: 'bold', fontScale: 0.95 },
+  { hex: '#43AA8B', weight: 'light', fontScale: 1.0 },
+  { hex: '#A8DADC', weight: 'light', fontScale: 0.9 },
+  { hex: '#F4A261', weight: 'light', fontScale: 1.05 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.85 },
+];
+const PALETTE_TABLE = [
+  { hex: '#FFE8D6', weight: 'bold', fontScale: 0.98 },
+  { hex: '#DDB892', weight: 'light', fontScale: 1.05 },
+  { hex: '#E9C46A', weight: 'bold', fontScale: 0.95 },
+  { hex: '#F4A261', weight: 'light', fontScale: 1.0 },
+  { hex: '#E6CCB2', weight: 'light', fontScale: 1.08 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.9 },
+  { hex: '#FFD6A5', weight: 'light', fontScale: 1.0 },
+];
+const PALETTE_HOME = [
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
+  { hex: '#A8DADC', weight: 'light', fontScale: 1.08 },
+  { hex: '#F1FAEE', weight: 'bold', fontScale: 0.95 },
+  { hex: '#E63946', weight: 'light', fontScale: 1.05 },
+  { hex: '#A8DADC', weight: 'light', fontScale: 1.0 },
+  { hex: '#F1FAEE', weight: 'bold', fontScale: 0.88 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.85 },
+];
+const PALETTE_WORK = [
+  { hex: '#F8F9FA', weight: 'bold', fontScale: 0.98 },
+  { hex: '#CED4DA', weight: 'light', fontScale: 1.05 },
+  { hex: '#4EA8DE', weight: 'bold', fontScale: 0.95 },
+  { hex: '#48BFE3', weight: 'light', fontScale: 1.0 },
+  { hex: '#56CFE1', weight: 'light', fontScale: 1.08 },
+  { hex: '#72EFDD', weight: 'light', fontScale: 1.12 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.85 },
+];
+const PALETTE_KIDS = [
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
+  { hex: '#FFADAD', weight: 'light', fontScale: 1.1 },
+  { hex: '#FFD6A5', weight: 'bold', fontScale: 0.95 },
+  { hex: '#FDFFB6', weight: 'light', fontScale: 1.05 },
+  { hex: '#CAFFBF', weight: 'light', fontScale: 1.0 },
+  { hex: '#9BF6FF', weight: 'light', fontScale: 1.08 },
+  { hex: '#BDB2FF', weight: 'bold', fontScale: 0.9 },
+];
+const PALETTE_SIMPLE = [
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.98 },
+  { hex: '#B8C0FF', weight: 'light', fontScale: 1.08 },
+  { hex: '#C8B6FF', weight: 'bold', fontScale: 0.95 },
+  { hex: '#E7C6FF', weight: 'light', fontScale: 1.0 },
+  { hex: '#FFD6FF', weight: 'light', fontScale: 1.05 },
+  { hex: '#BBD0FF', weight: 'light', fontScale: 1.1 },
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 0.85 },
+];
+
+const PALETTE_SUNSET = [
+  { hex: '#3D0C11', text: '#FFE5D9' },
+  { hex: '#D62828', text: '#ffffff' },
+  { hex: '#F77F00', text: '#1a1a1a' },
+  { hex: '#FCBF49', text: '#1a1a1a' },
+  { hex: '#EAE2B7', text: '#1a1a1a' },
+];
+const PALETTE_OCEAN = [
+  { hex: '#03045E', text: '#ffffff' },
+  { hex: '#0077B6', text: '#ffffff' },
+  { hex: '#00B4D8', text: '#032b3a' },
+  { hex: '#90E0EF', text: '#023047' },
+];
+const PALETTE_CANDY = [
+  { hex: '#FF0A54', text: '#ffffff' },
+  { hex: '#FF477E', text: '#ffffff' },
+  { hex: '#FF5C8A', text: '#1a1a1a' },
+  { hex: '#FF85A1', text: '#1a1a1a' },
+  { hex: '#FF99AC', text: '#1a1a1a' },
+  { hex: '#FBB1BD', text: '#1a1a1a' },
+];
+const PALETTE_NEWS = [
+  { hex: '#111111', text: '#ffffff' },
+  { hex: '#F5F5F5', text: '#111111' },
+  { hex: '#111111', text: '#ffffff' },
+  { hex: '#F5F5F5', text: '#111111' },
+  { hex: '#111111', text: '#ffffff' },
+];
+const PALETTE_MEADOW = [
+  { hex: '#1B4332', text: '#ffffff' },
+  { hex: '#2D6A4F', text: '#ffffff' },
+  { hex: '#40916C', text: '#ffffff' },
+  { hex: '#52B788', text: '#081c15' },
+  { hex: '#95D5B2', text: '#081c15' },
+  { hex: '#D8F3DC', text: '#1b4332' },
+];
+
+const PALETTE_FRENCH = [
+  { hex: '#0055A4', text: '#ffffff' },
+  { hex: '#FFFFFF', text: '#002395' },
+  { hex: '#EF4135', text: '#ffffff' },
+];
+
+const PALETTE_BLANK = [
+  { hex: '#FFFFFF', weight: 'bold', fontScale: 1 },
+  { hex: '#FF8C00', weight: 'light', fontScale: 1.1 },
+  { hex: '#FFED00', weight: 'bold', fontScale: 1 },
+  { hex: '#00D4FF', weight: 'regular', fontScale: 1 },
+];
+
 export const TEMPLATES = [
   {
     id: 'classic',
     name: 'Classic',
-    blurb: 'Black poster with rainbow type',
+    blurb: 'The original rainbow poster',
     tone: 'sincere',
     backgroundColor: '#000000',
     border: { enabled: true, color: '#ffffff', width: 3 },
@@ -192,23 +245,41 @@ export const TEMPLATES = [
     ),
   },
   {
-    id: 'family',
-    name: 'Family',
-    blurb: 'Warm home values, classic poster look',
+    id: 'classic-invert',
+    name: 'Classic invert',
+    blurb: 'Same lines, white field, inverted colors',
     tone: 'sincere',
-    backgroundColor: '#000000',
-    border: { enabled: true, color: '#ffffff', width: 3 },
+    backgroundColor: '#ffffff',
+    border: { enabled: true, color: '#000000', width: 3 },
     lines: withPalette(
       [
         'In this house we believe',
-        'Family comes first',
-        'Hard work matters',
-        'Be kind anyway',
-        'Everyone belongs at this table',
-        'We leave things better than we found them',
+        'Black lives matter',
+        "Women's rights are human rights",
+        'No human is illegal',
+        'Science is real',
+        'Love is love',
+        'Kindness is everything',
       ],
-      PALETTE_FAMILY,
+      CLASSIC_INVERT,
       'textOnBlack'
+    ),
+  },
+  {
+    id: 'french',
+    name: 'Tricolore',
+    blurb: 'Three stripes. Extremely French priorities.',
+    tone: 'funny',
+    backgroundColor: '#0055A4',
+    border: { enabled: true, color: '#ffffff', width: 3 },
+    lines: withPalette(
+      [
+        'The baguette must travel upright',
+        'Butter is a civil right',
+        'Lunch deserves two hours',
+      ],
+      PALETTE_FRENCH,
+      'stripes'
     ),
   },
   {
@@ -219,125 +290,264 @@ export const TEMPLATES = [
     backgroundColor: '#000000',
     border: { enabled: true, color: '#ffffff', width: 3 },
     lines: withPalette(
-      [
-        'In this house we believe',
-        '',
-        '',
-        '',
-      ],
+      ['In this house we believe', '', ''],
       PALETTE_BLANK,
       'textOnBlack'
     ),
   },
   {
-    id: 'snacks',
-    name: 'Chaotic good',
-    blurb: 'Honest household priorities, classic look',
+    id: 'family',
+    name: 'Family first',
+    blurb: 'Mild every-Joe household values',
+    tone: 'sincere',
+    backgroundColor: '#1a120b',
+    border: { enabled: true, color: '#f4e6d4', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Family comes first',
+        'Kindness is everything',
+        'Hard work matters',
+        'We take care of each other',
+      ],
+      PALETTE_FAMILY,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'neighbor',
+    name: 'Good neighbor',
+    blurb: 'Wave, share tools, keep it civil',
+    tone: 'sincere',
+    backgroundColor: '#0d1f17',
+    border: { enabled: true, color: '#90be6d', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Wave to your neighbors',
+        'Return what you borrow',
+        'Keep the noise down after nine',
+        'A handshake still matters',
+        'This street is a community',
+      ],
+      PALETTE_NEIGHBOR,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'table',
+    name: 'Dinner table',
+    blurb: 'Phones down, pass the potatoes',
+    tone: 'sincere',
+    backgroundColor: '#2b1810',
+    border: { enabled: true, color: '#ddb892', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Dinner is better together',
+        'Phones stay off the table',
+        'Somebody has to do the dishes',
+      ],
+      PALETTE_TABLE,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'home',
+    name: 'Home base',
+    blurb: 'Wipe your feet, love the dog',
+    tone: 'sincere',
+    backgroundColor: '#0f172a',
+    border: { enabled: true, color: '#a8dadc', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Wipe your feet',
+        'The dog is family',
+        'Home should feel safe',
+        'You are always welcome here',
+      ],
+      PALETTE_HOME,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'work',
+    name: 'Show up',
+    blurb: 'Clock in, do your best, go home',
+    tone: 'sincere',
+    backgroundColor: '#111827',
+    border: { enabled: true, color: '#4ea8de', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Show up on time',
+        'Do the work',
+        'Ask for help when you need it',
+        'Rest is part of the plan',
+        'Tomorrow we try again',
+      ],
+      PALETTE_WORK,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'kids',
+    name: 'Raising kids',
+    blurb: 'Bedtime, manners, outdoor time',
+    tone: 'sincere',
+    backgroundColor: '#1a1025',
+    border: { enabled: true, color: '#bdb2ff', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Bedtime is bedtime',
+        'Outside time counts',
+        'Hugs fix a lot',
+      ],
+      PALETTE_KIDS,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'simple',
+    name: 'Keep it simple',
+    blurb: 'Coffee, gratitude, no drama',
+    tone: 'sincere',
+    backgroundColor: '#1b1030',
+    border: { enabled: true, color: '#c8b6ff', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Coffee first',
+        'Count your blessings',
+        'Small wins count',
+        'Be decent',
+      ],
+      PALETTE_SIMPLE,
+      'textOnBlack'
+    ),
+  },
+  {
+    id: 'rainbow',
+    name: 'Rainbow bands',
+    blurb: 'ROYGBIV stripes, everyday creed',
+    tone: 'sincere',
+    backgroundColor: '#E40303',
+    border: { enabled: true, color: '#ffffff', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Say please and thank you',
+        'Share the good snacks',
+        'Apologies should be real',
+        'Outside time counts',
+        'Call your people back',
+        'Be decent',
+      ],
+      ROYGBIV,
+      'stripes'
+    ),
+  },
+  {
+    id: 'sunset',
+    name: 'Sunset bands',
+    blurb: 'Warm stripes, porch energy',
+    tone: 'sincere',
+    backgroundColor: '#3D0C11',
+    border: { enabled: true, color: '#EAE2B7', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Porch time is sacred',
+        'Leftovers deserve respect',
+        'Sunsets beat screens',
+        'Come inside when the bugs win',
+      ],
+      PALETTE_SUNSET,
+      'stripes'
+    ),
+  },
+  {
+    id: 'ocean',
+    name: 'Ocean bands',
+    blurb: 'Blue stripes, calm priorities',
+    tone: 'sincere',
+    backgroundColor: '#03045E',
+    border: { enabled: true, color: '#90E0EF', width: 3 },
+    lines: withPalette(
+      [
+        'In this house we believe',
+        'Take the long way home',
+        'Salt air fixes attitudes',
+        'Towels belong on hooks',
+      ],
+      PALETTE_OCEAN,
+      'stripes'
+    ),
+  },
+  {
+    id: 'candy',
+    name: 'Candy bands',
+    blurb: 'Pink stripes, soft rules',
     tone: 'funny',
-    backgroundColor: '#000000',
+    backgroundColor: '#FF0A54',
     border: { enabled: true, color: '#ffffff', width: 3 },
     lines: withPalette(
       [
         'In this house we believe',
-        'Snacks are a human right',
-        'The dog votes',
-        'Sleep is optional',
-        'Pineapple on pizza is fine',
-        'We do not share chargers',
+        'Dessert can be breakfast',
+        'Sprinkles are a food group',
+        'Sharing is non-negotiable',
+        'Nap after sugar crashes',
+        'Hugs fix a lot',
       ],
-      PALETTE_SNACKS,
-      'textOnBlack'
+      PALETTE_CANDY,
+      'stripes'
     ),
   },
   {
-    id: 'meta',
-    name: 'Meta',
-    blurb: 'A sign about signs, classic look',
-    tone: 'ironic',
-    backgroundColor: '#000000',
+    id: 'news',
+    name: 'Newsprint',
+    blurb: 'Black and white stripes',
+    tone: 'sincere',
+    backgroundColor: '#111111',
     border: { enabled: true, color: '#ffffff', width: 3 },
     lines: withPalette(
       [
         'In this house we believe',
-        'Yard signs change nothing',
-        'But they look great from the street',
-        'Virtue is easier in all caps',
-        'This message was custom-ordered',
-        'Please clap',
+        'Read past the headline',
+        'Facts before feelings',
+        'Quiet mornings matter',
+        'Coffee first then opinions',
       ],
-      PALETTE_META,
-      'textOnBlack'
+      PALETTE_NEWS,
+      'stripes'
     ),
   },
   {
-    id: 'fake-virtue',
-    name: 'Fake virtue',
-    blurb: 'Joke values, classic poster look',
-    tone: 'ironic',
-    backgroundColor: '#000000',
-    border: { enabled: true, color: '#ffffff', width: 3 },
+    id: 'meadow',
+    name: 'Meadow bands',
+    blurb: 'Green stripes, garden creed',
+    tone: 'sincere',
+    backgroundColor: '#1B4332',
+    border: { enabled: true, color: '#D8F3DC', width: 3 },
     lines: withPalette(
       [
         'In this house we believe',
-        'Hot takes are a personality',
-        'Nuance is cancelled',
-        'My neighbor is wrong',
-        'I read the headline',
-        'That counts as research',
+        'Dirt under nails is fine',
+        'Water the plants',
+        'Tomatoes get the sunny spot',
+        'Weeds are a lifestyle',
+        'Bring zucchini to neighbors',
       ],
-      PALETTE_FAKE,
-      'textOnBlack'
+      PALETTE_MEADOW,
+      'stripes'
     ),
   },
-  {
-    id: 'unhinged',
-    name: 'Unhinged',
-    blurb: 'Borderline. Your lawn, your problem.',
-    tone: 'spicy',
-    backgroundColor: '#000000',
-    border: { enabled: true, color: '#ffffff', width: 3 },
-    lines: withPalette(
-      [
-        'In this house we believe',
-        'Touch grass',
-        'Your opinion is invalid after 9pm',
-        'We gatekeep this driveway',
-        'Therapy is expensive so we yell',
-        'If you can read this you are too close',
-        'Go home',
-      ],
-      PALETTE_UNHINGED,
-      'textOnBlack'
-    ),
-  },
-  {
-    id: 'problematic',
-    name: 'Problematic',
-    blurb: 'Satire with teeth - not for everyone',
-    tone: 'spicy',
-    backgroundColor: '#000000',
-    border: { enabled: true, color: '#ffffff', width: 3 },
-    lines: withPalette(
-      [
-        'In this house we believe',
-        'Feelings are not facts',
-        'Your trauma is not a personality',
-        'Nobody cares about your brand',
-        'Being loud is not being right',
-        'We will not be attending the discourse',
-        'Mind your business',
-      ],
-      PALETTE_PROBLEMATIC,
-      'textOnBlack'
-    ),
-  },
+
 ];
 
-
-/**
- * Auto size/weight custom lines to mimic Classic poster rhythm:
- * short copy gets bigger + lighter; long copy gets smaller + heavier.
- */
 export function reflowPosterLines(lines) {
   const list = Array.isArray(lines) ? lines : [];
   const lengths = list.map((l) => Math.max(String(l?.text || '').trim().length, 0));

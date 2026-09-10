@@ -315,8 +315,7 @@ export default function Customizer() {
             ))}
           </div>
           <p className="hint">
-            Pick a starting point, then edit anything. Spicy templates are satire — your lawn, your
-            call.
+            Pick a starting point, then edit anything. Classic is the original; the others are mild everyday family stuff.
           </p>
         </div>
 
@@ -532,7 +531,6 @@ export default function Customizer() {
           ) : null}
           <p className="hint" style={{ textAlign: 'center', margin: 0 }}>
             Custom corrugated plastic yard sign — printed just for you. Secure checkout via Stripe.
-            Share copies a free link (no checkout).
           </p>
         </div>
       </section>
