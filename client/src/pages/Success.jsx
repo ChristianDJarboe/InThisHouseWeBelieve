@@ -1,6 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
+const PENDING = [
+  'paid',
+  'generating_artwork',
+  'artwork_ready',
+  'uploading_to_printify',
+  'creating_printify_order',
+];
+
+function friendlyStatus(status) {
+  const map = {
+    paid: 'Payment received',
+    generating_artwork: 'Preparing your sign',
+    artwork_ready: 'Preparing your sign',
+    uploading_to_printify: 'Sending to production',
+    creating_printify_order: 'Sending to production',
+    fulfilled: 'In production',
+    printify_submit_pending: 'In production',
+    awaiting_printify_config: 'Order received',
+    fulfillment_error: 'Needs attention — we will follow up',
+  };
+  return map[status] || String(status || '').replace(/_/g, ' ');
+}
+
 export default function Success() {
   const [params] = useSearchParams();
   const sessionId = params.get('session_id');
@@ -30,11 +53,7 @@ export default function Success() {
         if (!cancelled) {
           setOrder(data);
           setLoading(false);
-          if (
-            ['paid', 'generating_artwork', 'artwork_ready', 'uploading_to_printify', 'creating_printify_order'].includes(
-              data.status
-            )
-          ) {
+          if (PENDING.includes(data.status)) {
             setTimeout(poll, 2500);
           }
         }
@@ -52,22 +71,26 @@ export default function Success() {
     };
   }, [sessionId]);
 
+  // Never surface internal provider errors to the customer
+  const publicNote =
+    order?.errorMessage && !/printify/i.test(order.errorMessage)
+      ? order.errorMessage
+      : null;
+
   return (
     <div className="panel status-card">
       <h1>Thank you!</h1>
-      <p>Your payment was received. We are preparing your custom sign for printing.</p>
-      {loading && <p>Looking up your order…</p>}
+      <p>Your payment was received. We are preparing your one-of-one custom yard sign for printing and shipping.</p>
+      {loading && <p>Looking up your order...</p>}
       {error && <div className="error-banner">{error}</div>}
       {order && (
         <>
-          <div className={`status-pill ${order.status}`}>{order.status.replace(/_/g, ' ')}</div>
+          <div className={`status-pill ${order.status}`}>{friendlyStatus(order.status)}</div>
           <p>
             Order ID: <code>{order.id}</code>
           </p>
           {order.customerEmail && <p>Confirmation email: {order.customerEmail}</p>}
-          {order.errorMessage && (
-            <p className="hint">Note: {order.errorMessage}</p>
-          )}
+          {publicNote && <p className="hint">Note: {publicNote}</p>}
         </>
       )}
       <p style={{ marginTop: '1.5rem' }}>
@@ -76,3 +99,4 @@ export default function Success() {
     </div>
   );
 }
+

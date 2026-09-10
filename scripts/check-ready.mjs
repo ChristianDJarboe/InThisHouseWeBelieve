@@ -1,0 +1,10 @@
+﻿import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+dotenv.config({ path: path.join(root, '.env') });
+const need = ['STRIPE_SECRET_KEY','STRIPE_PUBLISHABLE_KEY','STRIPE_WEBHOOK_SECRET','PRINTIFY_API_TOKEN','PRINTIFY_SHOP_ID','PRINTIFY_BLUEPRINT_ID','PRINTIFY_PRINT_PROVIDER_ID','PRINTIFY_VARIANT_ID','PUBLIC_URL'];
+const out = {};
+for (const k of need) out[k] = process.env[k] ? 'ok' : 'missing';
+console.log(JSON.stringify({ env: out, publicUrl: process.env.PUBLIC_URL, variant: process.env.PRINTIFY_VARIANT_ID }, null, 2));

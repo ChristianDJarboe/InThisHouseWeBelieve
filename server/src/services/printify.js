@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Printify API client — real HTTP calls to https://api.printify.com/v1
  * Docs: https://developers.printify.com/
  */
@@ -68,25 +68,32 @@ export async function createAndSubmitOrder({
   shipping,
   externalId,
   label,
+  variantId: variantIdOverride,
+  priceCents: priceCentsOverride,
 }) {
-  const { shopId, blueprintId, printProviderId, variantId } = config();
+  const { shopId, blueprintId, printProviderId, variantId: envVariantId } = config();
+  const variantId = variantIdOverride || envVariantId;
 
   if (!blueprintId || !printProviderId || !variantId) {
     throw new Error(
-      'PRINTIFY_BLUEPRINT_ID, PRINTIFY_PRINT_PROVIDER_ID, and PRINTIFY_VARIANT_ID are required'
+      'PRINTIFY_BLUEPRINT_ID, PRINTIFY_PRINT_PROVIDER_ID, and a variant id (order or PRINTIFY_VARIANT_ID) are required'
     );
   }
 
+  const priceCents = Number(
+    priceCentsOverride || process.env.PRODUCT_PRICE_CENTS || 2999
+  );
+
   // Create a temporary product with custom artwork on the print area
   const productPayload = {
-    title: label || 'Custom In This House We Believe Sign',
-    description: 'Custom personalized sign',
+    title: label || 'Custom In This House We Believe Yard Sign',
+    description: 'Custom corrugated plastic yard sign',
     blueprint_id: Number(blueprintId),
     print_provider_id: Number(printProviderId),
     variants: [
       {
         id: Number(variantId),
-        price: Number(process.env.PRODUCT_PRICE_CENTS || 4999),
+        price: priceCents,
         is_enabled: true,
       },
     ],
@@ -143,7 +150,7 @@ export async function createAndSubmitOrder({
   // Submit for production
   let submitted = order;
   try {
-    submitted = await printifyFetch(`/shops/${shopId}/orders/${order.id}/send.json`, {
+    submitted = await printifyFetch(`/shops/${shopId}/orders/${order.id}/send_to_production.json`, {
       method: 'POST',
       body: JSON.stringify({}),
     });
@@ -202,3 +209,4 @@ export function isPrintifyConfigured() {
       process.env.PRINTIFY_VARIANT_ID
   );
 }
+

@@ -7,7 +7,7 @@ export default function Header() {
         <Link to="/" className="brand">
           In This House <span>We Believe</span>
         </Link>
-        <span style={{ fontSize: '0.9rem', opacity: 0.9 }}>Plastic yard signs</span>
+        <span className="tagline">Plastic yard signs</span>
       </div>
     </header>
   );

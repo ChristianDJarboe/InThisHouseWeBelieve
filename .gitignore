@@ -42,3 +42,17 @@ coverage/
 
 data/*.db
 data/orders.json
+
+# Local Stripe / tunnel helpers (do not commit)
+stripe-*.bat
+stripe-*.json
+stripe-*.log
+stripe-login.json.txt
+tools/cloudflared.exe
+scripts/fix-*.mjs
+scripts/add-*.mjs
+scripts/apply-*.mjs
+scripts/patch-*.mjs
+scripts/match-*.mjs
+scripts/template-*.mjs
+scripts/write-*.mjs

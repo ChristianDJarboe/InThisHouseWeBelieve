@@ -4,11 +4,14 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <h1>Design your plastic yard sign</h1>
+        <h1>Whats your message?</h1>
         <p>
-          Customize every line on a corrugated plastic yard sign — ROYGBIV stripes, your
-          words, your colors. Preview stays live while you edit, then we print and ship via
-          Printify.
+          Express yourself with a custom &quot;In This House We Believe&quot; yard sign. Your
+          words, your colors.
+        </p>
+        <p className="hero-note">
+          Every order is made just for you — a one-of-one print of the design you create here.
+          No two signs are exactly alike.
         </p>
       </section>
       <Customizer />

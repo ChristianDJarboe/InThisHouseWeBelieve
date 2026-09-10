@@ -8,6 +8,10 @@ import Footer from './components/Footer';
 export default function App() {
   return (
     <div className="app-shell">
+      <div className="page-bg" aria-hidden="true">
+        <img src="/classic-bg.png" alt="" className="page-bg-img" />
+        <div className="page-bg-veil" />
+      </div>
       <Header />
       <main className="main">
         <Routes>

@@ -15,6 +15,7 @@ import uploadRouter from './routes/upload.js';
 import checkoutRouter from './routes/checkout.js';
 import webhooksRouter from './routes/webhooks.js';
 import ordersRouter from './routes/orders.js';
+import shareRouter from './routes/share.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -40,6 +41,7 @@ app.use('/api/config', configRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/checkout', checkoutRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/share', shareRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, env: process.env.NODE_ENV || 'development' });

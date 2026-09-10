@@ -9,6 +9,7 @@ import {
 } from '../db/orders.js';
 import { generateArtwork } from './artwork.js';
 import { uploadImage, createAndSubmitOrder, isPrintifyConfigured } from './printify.js';
+import { getDraft, deleteDraft } from '../db/drafts.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, '../../../uploads');
@@ -27,12 +28,19 @@ export async function fulfillCheckoutSession(session) {
   }
 
   let customization = {};
-  try {
-    customization = session.metadata?.customization
-      ? JSON.parse(session.metadata.customization)
-      : {};
-  } catch {
-    customization = {};
+  const draftId = session.metadata?.draftId;
+  if (draftId) {
+    customization = getDraft(draftId) || {};
+  } else if (session.metadata?.customization) {
+    // legacy sessions that embedded JSON in metadata
+    try {
+      customization = JSON.parse(session.metadata.customization);
+    } catch {
+      customization = {};
+    }
+  }
+  if (session.metadata?.variantId && !customization.variantId) {
+    customization.variantId = session.metadata.variantId;
   }
 
   if (customization.backgroundImageUrl) {
@@ -64,6 +72,8 @@ export async function fulfillCheckoutSession(session) {
     },
   });
 
+  if (draftId) deleteDraft(draftId);
+
   return continueFulfillment(order, session);
 }
 
@@ -93,11 +103,14 @@ async function continueFulfillment(order, session) {
     const shipping = order.shipping || {};
     shipping.email = shipping.email || order.customerEmail;
 
+    const customization = order.customization || {};
     const result = await createAndSubmitOrder({
       imageId,
       shipping,
       externalId: order.id.replace(/-/g, '').slice(0, 32),
       label: `ITHWB-${order.id.slice(0, 8)}`,
+      variantId: customization.variantId || session?.metadata?.variantId,
+      priceCents: session?.amount_total || customization.priceCents,
     });
 
     updateOrder(order.id, {

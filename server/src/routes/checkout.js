@@ -1,5 +1,7 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import Stripe from 'stripe';
+import { findSize, getDefaultSize } from '../config/sizes.js';
+import { saveDraft } from '../db/drafts.js';
 
 const router = Router();
 
@@ -9,16 +11,14 @@ function getStripe() {
   return new Stripe(key);
 }
 
-const MAX_CUSTOMIZATION_CHARS = 4500;
-
 router.post('/', async (req, res) => {
   try {
-    const { customization } = req.body || {};
+    const { customization, variantId: requestedVariantId } = req.body || {};
     if (!customization || !Array.isArray(customization.lines)) {
       return res.status(400).json({ error: 'customization.lines is required' });
     }
-    if (customization.lines.length < 3 || customization.lines.length > 12) {
-      return res.status(400).json({ error: 'Number of lines must be between 3 and 12' });
+    if (customization.lines.length < 1 || customization.lines.length > 10) {
+      return res.status(400).json({ error: 'Number of lines must be between 1 and 10' });
     }
     for (const line of customization.lines) {
       if (typeof line.text !== 'string') {
@@ -29,16 +29,22 @@ router.post('/', async (req, res) => {
       }
     }
 
-    const meta = JSON.stringify(customization);
-    if (meta.length > MAX_CUSTOMIZATION_CHARS) {
-      return res.status(400).json({
-        error: 'Customization payload too large for Stripe metadata. Shorten text or remove background image reference.',
-      });
+    const size =
+      findSize(requestedVariantId || customization.variantId) || getDefaultSize();
+    if (!size) {
+      return res.status(500).json({ error: 'No product sizes configured' });
     }
 
+    // Trust server catalog only — never client-supplied price
+    customization.variantId = size.variantId;
+    customization.sizeLabel = size.label;
+    customization.orientation = size.orientation;
+
+    // Stripe metadata values max out at 500 chars — store full design locally
+    const draftId = saveDraft(customization);
+
     const stripe = getStripe();
-    const priceCents = Number(process.env.PRODUCT_PRICE_CENTS || 4999);
-    const productName = process.env.PRODUCT_NAME || 'In This House We Believe Sign';
+    const productName = process.env.PRODUCT_NAME || 'In This House We Believe Plastic Yard Sign';
     const publicUrl = (process.env.PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, '');
 
     const session = await stripe.checkout.sessions.create({
@@ -49,10 +55,10 @@ router.post('/', async (req, res) => {
           quantity: 1,
           price_data: {
             currency: 'usd',
-            unit_amount: priceCents,
+            unit_amount: size.priceCents,
             product_data: {
-              name: productName,
-              description: 'Custom personalized wall sign',
+              name: `${productName} — ${size.label}`,
+              description: 'Custom corrugated plastic yard sign',
             },
           },
         },
@@ -61,14 +67,23 @@ router.post('/', async (req, res) => {
         allowed_countries: ['US', 'CA', 'GB', 'AU'],
       },
       phone_number_collection: { enabled: true },
+      customer_creation: 'always',
+      // Stripe Dashboard → Settings → Customer emails → Successful payments also needed for receipts
       metadata: {
-        customization: meta,
+        draftId,
+        variantId: size.variantId,
+        priceCents: String(size.priceCents),
       },
       success_url: `${publicUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${publicUrl}/cancel`,
     });
 
-    res.json({ url: session.url, sessionId: session.id });
+    res.json({
+      url: session.url,
+      sessionId: session.id,
+      variantId: size.variantId,
+      priceCents: size.priceCents,
+    });
   } catch (err) {
     console.error('Checkout error:', err);
     res.status(500).json({ error: err.message || 'Failed to create checkout session' });
@@ -76,3 +91,4 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
+
