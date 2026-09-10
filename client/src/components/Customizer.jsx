@@ -29,7 +29,9 @@ export default function Customizer() {
     setLines((prev) => {
       if (count === prev.length) return prev;
       if (count > prev.length) {
-        const extras = Array.from({ length: count - prev.length }, makeBlankLine);
+        const extras = Array.from({ length: count - prev.length }, (_, i) =>
+          makeBlankLine(prev.length + i)
+        );
         return [...prev, ...extras];
       }
       return prev.slice(0, count);
@@ -90,8 +92,8 @@ export default function Customizer() {
 
   return (
     <div className="customizer-layout">
-      <section className="panel">
-        <h2>Live preview</h2>
+      <section className="panel preview-panel">
+        <h2>Live yard-sign preview</h2>
         <SignPreview
           lines={lines}
           backgroundColor={backgroundColor}
@@ -99,12 +101,12 @@ export default function Customizer() {
         />
         <p className="price-tag">{formatPrice(config.priceCents)}</p>
         <p className="hint" style={{ textAlign: 'center' }}>
-          {config.productName || 'Custom sign'} · Ships via Printify
+          {config.productName || 'Plastic yard sign'} · Corrugated plastic · Ships via Printify
         </p>
       </section>
 
-      <section className="panel">
-        <h2>Customize your sign</h2>
+      <section className="panel controls-panel">
+        <h2>Customize your yard sign</h2>
         {error && <div className="error-banner">{error}</div>}
 
         <div className="field">
@@ -120,7 +122,7 @@ export default function Customizer() {
         </div>
 
         <div className="field">
-          <label htmlFor="bgColor">Sign background color</label>
+          <label htmlFor="bgColor">Yard sign background color</label>
           <div className="row">
             <input
               id="bgColor"
@@ -212,7 +214,7 @@ export default function Customizer() {
           {busy ? 'Redirecting to checkout…' : `Buy now — ${formatPrice(config.priceCents)}`}
         </button>
         <p className="hint" style={{ textAlign: 'center', marginTop: '0.75rem' }}>
-          Secure checkout powered by Stripe. Shipping address collected at payment.
+          Corrugated plastic yard sign only. Secure checkout via Stripe — shipping collected at payment.
         </p>
       </section>
     </div>

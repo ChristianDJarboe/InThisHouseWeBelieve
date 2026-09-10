@@ -1,18 +1,21 @@
 export default function SignPreview({ lines, backgroundColor, backgroundImageUrl }) {
   const count = Math.max(lines?.length || 1, 1);
-  const baseSize = Math.min(28, Math.max(12, Math.floor(220 / count)));
+  const baseSize = Math.min(26, Math.max(11, Math.floor(200 / count)));
 
   const faceStyle = {
-    backgroundColor: backgroundColor || '#f5f0e6',
+    backgroundColor: backgroundColor || '#ffffff',
     backgroundImage: backgroundImageUrl
-      ? `linear-gradient(rgba(245,240,230,0.55), rgba(245,240,230,0.55)), url(${backgroundImageUrl})`
+      ? `linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)), url(${backgroundImageUrl})`
       : undefined,
+    backgroundSize: backgroundImageUrl ? 'cover' : undefined,
+    backgroundPosition: backgroundImageUrl ? 'center' : undefined,
   };
 
   return (
     <div className="mockup-stage">
-      <div className="sign-frame" aria-label="Sign preview mockup">
-        <div className="sign-face" style={faceStyle}>
+      <div className="yard-sign" aria-label="Plastic yard sign preview">
+        <div className="sign-face plastic" style={faceStyle}>
+          <div className="plastic-flute" aria-hidden="true" />
           {(lines || []).map((line, i) => (
             <div
               key={i}
@@ -23,14 +26,19 @@ export default function SignPreview({ lines, backgroundColor, backgroundImageUrl
                   line.backgroundColor && line.backgroundColor !== 'transparent'
                     ? line.backgroundColor
                     : undefined,
-                fontSize: `${i === 0 ? baseSize * 1.1 : baseSize}px`,
+                fontSize: `${i === 0 ? baseSize * 1.05 : baseSize}px`,
               }}
             >
               {line.text || '\u00A0'}
             </div>
           ))}
         </div>
+        <div className="yard-stakes" aria-hidden="true">
+          <span className="stake" />
+          <span className="stake" />
+        </div>
       </div>
+      <p className="mockup-caption">Corrugated plastic yard sign · double-sided print</p>
     </div>
   );
 }
